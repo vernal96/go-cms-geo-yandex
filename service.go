@@ -31,8 +31,8 @@ type Service struct {
 }
 
 func NewService(config Config) (*Service, error) {
-	if strings.TrimSpace(config.SuggestAPIKey) == "" || strings.TrimSpace(config.GeocoderAPIKey) == "" || strings.TrimSpace(config.JSAPIKey) == "" {
-		return nil, errors.New("Yandex Suggest, Geocoder, and JavaScript API keys are required")
+	if strings.TrimSpace(config.SuggestAPIKey) == "" || strings.TrimSpace(config.GeocoderAPIKey) == "" {
+		return nil, errors.New("Yandex Suggest and Geocoder API keys are required")
 	}
 	client := config.HTTPClient
 	if client == nil {

@@ -18,7 +18,7 @@ modules := []kernel.Module{
 }
 ```
 
-All three keys are required. `JSAPIKey` is public and returned by `/api/geo-yandex/config`; restrict it in Yandex Developer Console by allowed referrers/domains. Never use a server key as the JavaScript key.
+`SuggestAPIKey` and `GeocoderAPIKey` are required. `JSAPIKey` is optional and public; when configured it is returned by `/api/geo-yandex/config`. Restrict it in Yandex Developer Console by allowed referrers/domains. Without it, the API returns an empty `js_api_key`, so the admin editor can use its manual coordinate input fallback. Never use a server key as the JavaScript key.
 
 ## Coordinate field
 

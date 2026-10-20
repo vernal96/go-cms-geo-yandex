@@ -7,8 +7,20 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/vernal96/go-cms-kernel"
 	"github.com/vernal96/go-cms-kernel/modules/core/field"
 )
+
+func TestModuleBuildAllowsMissingJSAPIKey(t *testing.T) {
+	application, err := (module{config: Config{SuggestAPIKey: "suggest", GeocoderAPIKey: "geocoder"}}).Build(context.Background(), kernel.ModuleContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	runtime, ok := application.(*Runtime)
+	if !ok || runtime.GeoYandex() == nil {
+		t.Fatalf("runtime=%#v", application)
+	}
+}
 
 func TestSuggestAndGeocodeUseProviderResponses(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +40,7 @@ func TestSuggestAndGeocodeUseProviderResponses(t *testing.T) {
 		}
 	}))
 	defer server.Close()
-	service, err := NewService(Config{SuggestAPIKey: "secret", GeocoderAPIKey: "secret", JSAPIKey: "browser-key", HTTPClient: server.Client(), SuggestURL: server.URL + "/suggest", GeocoderURL: server.URL + "/geocode"})
+	service, err := NewService(Config{SuggestAPIKey: "secret", GeocoderAPIKey: "secret", HTTPClient: server.Client(), SuggestURL: server.URL + "/suggest", GeocoderURL: server.URL + "/geocode"})
 	if err != nil {
 		t.Fatal(err)
 	}

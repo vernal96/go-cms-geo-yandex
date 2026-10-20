@@ -36,11 +36,11 @@ func TestPublicRoutesReturnDTOs(t *testing.T) {
 		_, _ = w.Write([]byte(`{"response":{"GeoObjectCollection":{"featureMember":[{"GeoObject":{"metaDataProperty":{"GeocoderMetaData":{"text":"Moscow"}},"Point":{"pos":"37 55"}}}]}}}`))
 	}))
 	defer provider.Close()
-	service, err := NewService(Config{SuggestAPIKey: "s", GeocoderAPIKey: "g", JSAPIKey: "browser-key", HTTPClient: provider.Client(), SuggestURL: provider.URL + "/suggest", GeocoderURL: provider.URL + "/geocode"})
+	service, err := NewService(Config{SuggestAPIKey: "s", GeocoderAPIKey: "g", HTTPClient: provider.Client(), SuggestURL: provider.URL + "/suggest", GeocoderURL: provider.URL + "/geocode"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	builder := publicHTTP(service, "browser-key", 0, nil)
+	builder := publicHTTP(service, "", 0, nil)
 	contribution, err := builder.Build(context.Background())
 	if err != nil {
 		t.Fatal(err)
@@ -56,7 +56,7 @@ func TestPublicRoutesReturnDTOs(t *testing.T) {
 	}{
 		{path: "/geo-yandex/suggests", query: "text=Moscow", wantStatus: 200, want: map[string]any{"results": []any{map[string]any{"title": "Moscow", "address": "Moscow"}}}},
 		{path: "/geo-yandex/geocode", query: "address=Moscow", wantStatus: 200, want: map[string]any{"lat": float64(55), "lon": float64(37), "address": "Moscow"}},
-		{path: "/geo-yandex/config", wantStatus: 200, want: map[string]any{"js_api_key": "browser-key"}},
+		{path: "/geo-yandex/config", wantStatus: 200, want: map[string]any{"js_api_key": ""}},
 	}
 	for _, test := range cases {
 		route := registrar.routes[test.path]
